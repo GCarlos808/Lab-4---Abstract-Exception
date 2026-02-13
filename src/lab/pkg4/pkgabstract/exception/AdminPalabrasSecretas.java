@@ -23,24 +23,28 @@ public class AdminPalabrasSecretas {
     
     static public String ObtenerPalabraRNG(){
         int indiceRNG;
+        String Palabra;
+        if (ListaPalabras.isEmpty()) { 
+            return "Ya no quedan palabras"; 
+        }
         
         Random BuscarRNG = new Random();
-        indiceRNG = BuscarRNG.nextInt(ListaPalabras.size());
-        return ListaPalabras.get(indiceRNG);
+        indiceRNG = BuscarRNG.nextInt(ListaPalabras.size());    
+        Palabra = ListaPalabras.remove(indiceRNG);
+        
+        return Palabra;
     }
     
     public static void main(String [] args){
-        Scanner n = new Scanner(System.in);
         String Palabra;
-        int opcion=1;
-        AgregarPalabras();
-        Palabra = ObtenerPalabraRNG();
-        while(opcion==1){
-            System.out.println("agrege");
-            opcion = n.nextInt();
-
-            System.out.println(Palabra);
+        while(!ListaPalabras.isEmpty()){
+            for(int x=0 ; x<10 ; x++){
+                AgregarPalabras();
+                Palabra = ObtenerPalabraRNG();
+                System.out.println(Palabra);
+            }
         }
+        
     }
 }
 
