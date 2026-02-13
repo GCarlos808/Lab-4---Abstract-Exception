@@ -428,31 +428,31 @@ public class GUI extends JFrame {
     }
     
     private JButton SButton() {
-        JButton button = new JButton("PROBAR LETRA");
-        button.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        button.setForeground(CSECUNDARIO);
-        button.setBackground(CACENTO);
-        button.setFocusPainted(false);
-        btnBorderPainted(false);
-        button.setPreferredSize(new Dimension(150, 45));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    JButton button = new JButton("PROBAR LETRA");
+    button.setFont(new Font("Segoe UI", Font.BOLD, 13));
+    button.setForeground(CSECUNDARIO);
+    button.setBackground(CACENTO);
+    button.setFocusPainted(false);
+    button.setBorderPainted(false); // ✅ CORREGIDO
+    button.setPreferredSize(new Dimension(150, 45));
+    button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                if (button.isEnabled()) {
-                    button.setBackground(new Color(67, 160, 71));
-                }
+    button.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            if (button.isEnabled()) {
+                button.setBackground(new Color(67, 160, 71));
             }
-            
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(CACENTO);
-            }
-        });
+        }
         
-        return button;
-    }
+        @Override
+        public void mouseExited(MouseEvent e) {
+            button.setBackground(CACENTO);
+        }
+    });
+    
+    return button;
+}
     
     private JPanel FooterPanel() {
         JPanel panel = new JPanel();
@@ -467,9 +467,5 @@ public class GUI extends JFrame {
         panel.add(lblInfo);
         
         return panel;
-    }
-
-    private void btnBorderPainted(boolean b) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -7,7 +7,6 @@ public class Lab4AbstractException {
     private static GUI ventana;
     
     public static void main(String[] args) {
-        AdminPalabrasSecretas.AgregarPalabras();
         
         inicializarJuegos();
         
@@ -27,5 +26,7 @@ public class Lab4AbstractException {
         System.out.println("  - Juego Fijo: palabra cargada");
         System.out.println("  - Juego Azar: palabra aleatoria");
         System.out.println("═══════════════════════════════════\n");
+        GUI ventana = new GUI();
+        ventana.setVisible(true);
     }
 }

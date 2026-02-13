@@ -1,9 +1,6 @@
-
 package lab.pkg4.pkgabstract.exception;
-
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Scanner;
 
 public class AdminPalabrasSecretas {
     static ArrayList<String> ListaPalabras = new ArrayList<>();
@@ -34,10 +31,4 @@ public class AdminPalabrasSecretas {
         
         return Palabra;
     }
-    
-   
-        
-    }
-
-
-    
+}
