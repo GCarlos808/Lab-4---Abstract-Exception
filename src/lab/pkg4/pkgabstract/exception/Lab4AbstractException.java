@@ -6,7 +6,7 @@ public class Lab4AbstractException {
 
 
     public static void main(String[] args) {
-
+        
     }
 
 }
