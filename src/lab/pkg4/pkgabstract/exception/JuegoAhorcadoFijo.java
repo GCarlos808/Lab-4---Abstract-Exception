@@ -14,12 +14,13 @@ public class JuegoAhorcadoFijo extends JuegoAhorcadoBase {
                 arregloPalabraActual[i]=letra;
             }
         }
-        palabraActual=arregloPalabraActual.toString();
+        palabraActual = new String(arregloPalabraActual);
         return palabraActual;
     }
     
     @Override
     public Boolean verificarLetra(char letra){
+        letrasUsadas.add(letra);
         for(int i=0;i<palabraSecreta.length();i++){
             if(palabraSecreta.charAt(i)==letra)
                 return true;
@@ -35,10 +36,10 @@ public class JuegoAhorcadoFijo extends JuegoAhorcadoBase {
     @Override
     public void inicializarPalabraSecreta(){
         char[] arregloPalabraActual=new char[palabraSecreta.length()];
-        for(char c: arregloPalabraActual){
-            c='_';
-        }
-        palabraActual=arregloPalabraActual.toString();
+        for(int i = 0; i < arregloPalabraActual.length; i++){
+        arregloPalabraActual[i] = '_';
+    }
+        palabraActual = new String(arregloPalabraActual);
     }
     
     @Override

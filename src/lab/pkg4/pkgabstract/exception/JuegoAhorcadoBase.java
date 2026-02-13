@@ -12,4 +12,13 @@ public abstract class JuegoAhorcadoBase implements JuegoAhorcado{
     abstract Boolean verificarLetra(char letra);
     
     abstract Boolean hasGanado();
+    
+    public Boolean letraRepetida(char letra){
+    for(char l: letrasUsadas){
+        if(l==letra){
+            return true;
+        }
+    }
+    return false;
+    }
 }
