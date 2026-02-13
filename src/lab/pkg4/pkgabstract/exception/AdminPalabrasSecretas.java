@@ -21,7 +21,7 @@ public class AdminPalabrasSecretas {
         ListaPalabras.add("chimbo");
     }
     
-    static public String ObtenerPalabraRNG(){
+    public static String ObtenerPalabraRNG(){
         int indiceRNG;
         
         Random BuscarRNG = new Random();

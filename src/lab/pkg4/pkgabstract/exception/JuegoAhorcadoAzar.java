@@ -1,7 +1,8 @@
 package lab.pkg4.pkgabstract.exception;
 public class JuegoAhorcadoAzar extends JuegoAhorcadoBase{    
     
-    public JuegoAhorcadoAzar(){
+    public JuegoAhorcadoAzar(String palabraSecreta){
+        this.palabraSecreta=palabraSecreta;
         intentos=0;
     }
     

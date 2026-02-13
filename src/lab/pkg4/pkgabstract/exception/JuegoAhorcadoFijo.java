@@ -20,6 +20,7 @@ public class JuegoAhorcadoFijo extends JuegoAhorcadoBase {
     
     @Override
     public Boolean verificarLetra(char letra){
+        letrasUsadas.add(letra);
         for(int i=0;i<palabraSecreta.length();i++){
             if(palabraSecreta.charAt(i)==letra)
                 return true;
