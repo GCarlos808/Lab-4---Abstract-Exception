@@ -6,7 +6,8 @@ public class Lab4AbstractException {
 
 
     public static void main(String[] args) {
-
+        GUI ventana = new GUI();
+        ventana.setVisible(true);
     }
 
 }
