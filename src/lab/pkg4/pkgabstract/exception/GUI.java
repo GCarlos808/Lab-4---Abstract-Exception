@@ -17,13 +17,18 @@ import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class GUI extends JFrame {
 
-    private static JLabel campoPalabraSecreta;
-    private static JLabel intentosRestantes;
-    private static JTextField contador;
-    private static JTextField mensajeGuia;
-    private static  JButton intentar;
-    private static JTextField guia;
-    private static JButton reiniciar;
+    private JLabel campoPista;
+    private JTextField campoLetra;
+    private JButton btnIntentar;
+    private JButton btnRandom;
+    private JButton btnFijo;
+    private JTextField campoPalabra;
+    private JButton btnAgregar;
+    
+    private JuegoAhorcadoFijo juegoFijo;
+    private JuegoAhorcadoAzar juegoAzar;
+    private JuegoAhorcadoBase juegoActual;
+    private boolean juegoEnCurso = false;
     
     private final Color CPRIMARIO = new Color(51, 51, 51);
     private final Color CSECUNDARIO = new Color(255, 255, 255);
@@ -33,13 +38,11 @@ public class GUI extends JFrame {
     private final Color CTEXTO2 = new Color(117, 117, 117);
     
     public GUI(){
-    
         setTitle("Juego Ahorcado Six");
         setSize(620, 670);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
-        
         
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -50,15 +53,18 @@ public class GUI extends JFrame {
         initComponents();
     }
     
+    public void setJuegos(JuegoAhorcadoFijo fijo, JuegoAhorcadoAzar azar) {
+        this.juegoFijo = fijo;
+        this.juegoAzar = azar;
+    }
+    
     public void initComponents(){
         JPanel panelPrincipal = new JPanel();
         panelPrincipal.setLayout(new BorderLayout());
         panelPrincipal.setBackground(CFONDO);
 
         JPanel Header = HeaderPanel();
- 
         JPanel Body = BodyPanel();
-
         JPanel Footer = FooterPanel();
 
         panelPrincipal.add(Header, BorderLayout.NORTH);
@@ -106,7 +112,6 @@ public class GUI extends JFrame {
         consolaArea.setCaretColor(Color.WHITE);
         consolaArea.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
         
-        
         JScrollPane scroll = new JScrollPane(consolaArea);
         scroll.setPreferredSize(new Dimension(480, 180));
         scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
@@ -118,7 +123,6 @@ public class GUI extends JFrame {
         PrintStream printStream = new PrintStream(consolaStream, true);
         System.setOut(printStream);
         System.setErr(printStream);
-
         
         JSeparator separador = new JSeparator();
         separador.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
@@ -140,10 +144,10 @@ public class GUI extends JFrame {
         modoRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         modoRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
 
-        JButton btnRandom = new JButton("Random");
+        btnRandom = new JButton("Random");
         btnRandom.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnRandom.setForeground(CSECUNDARIO);
-        btnRandom.setBackground(new Color(33, 150, 243));   // Azul
+        btnRandom.setBackground(new Color(33, 150, 243));
         btnRandom.setFocusPainted(false);
         btnRandom.setBorderPainted(false);
         btnRandom.setPreferredSize(new Dimension(130, 36));
@@ -156,11 +160,12 @@ public class GUI extends JFrame {
                 btnRandom.setBackground(new Color(33, 150, 243));
             }
         });
+        btnRandom.addActionListener(e -> iniciarJuegoRandom());
 
-        JButton btnFijo = new JButton("Fijo");
+        btnFijo = new JButton("Fijo");
         btnFijo.setFont(new Font("Segoe UI", Font.BOLD, 13));
         btnFijo.setForeground(CSECUNDARIO);
-        btnFijo.setBackground(new Color(156, 39, 176));     // Púrpura
+        btnFijo.setBackground(new Color(156, 39, 176));
         btnFijo.setFocusPainted(false);
         btnFijo.setBorderPainted(false);
         btnFijo.setPreferredSize(new Dimension(130, 36));
@@ -173,6 +178,7 @@ public class GUI extends JFrame {
                 btnFijo.setBackground(new Color(156, 39, 176));
             }
         });
+        btnFijo.addActionListener(e -> iniciarJuegoFijo());
 
         modoRow.add(btnRandom);
         modoRow.add(btnFijo);
@@ -187,9 +193,9 @@ public class GUI extends JFrame {
         lblPalabraPista.setAlignmentX(Component.LEFT_ALIGNMENT);
         lblPalabraPista.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
         
-        JLabel campoPista = new JLabel("_ _ _ _ _");
-        campoPista.setFont(new Font("Monospaced", Font.BOLD, 20));
-        campoPista.setForeground(CACENTO);
+        campoPista = new JLabel("Selecciona un modo para empezar");
+        campoPista.setFont(new Font("Monospaced", Font.BOLD, 18));
+        campoPista.setForeground(CTEXTO2);
         campoPista.setAlignmentX(Component.LEFT_ALIGNMENT);
         campoPista.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 0));
         
@@ -198,8 +204,12 @@ public class GUI extends JFrame {
         inputRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
         inputRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        JTextField campoLetra = STextField("Ingresa una letra...");
-        JButton btnIntentar = SButton();
+        campoLetra = STextField("Ingresa una letra...");
+        campoLetra.setEnabled(false);
+        
+        btnIntentar = SButton();
+        btnIntentar.setEnabled(false);
+        btnIntentar.addActionListener(e -> intentarLetra());
         
         inputRow.add(campoLetra, BorderLayout.CENTER);
         inputRow.add(btnIntentar, BorderLayout.EAST);
@@ -219,9 +229,9 @@ public class GUI extends JFrame {
         palabraRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
         palabraRow.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        JTextField campoPalabra = STextField("Nueva palabra...");
+        campoPalabra = STextField("Nueva palabra...");
         
-        JButton btnAgregar = new JButton("+ Agregar");
+        btnAgregar = new JButton("+ Agregar");
         btnAgregar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnAgregar.setForeground(CSECUNDARIO);
         btnAgregar.setBackground(new Color(255, 152, 0));
@@ -237,6 +247,7 @@ public class GUI extends JFrame {
                 btnAgregar.setBackground(new Color(255, 152, 0));
             }
         });
+        btnAgregar.addActionListener(e -> agregarPalabra());
         
         palabraRow.add(campoPalabra, BorderLayout.CENTER);
         palabraRow.add(btnAgregar, BorderLayout.EAST);
@@ -253,7 +264,6 @@ public class GUI extends JFrame {
         controlesPanel.add(lblAgregarPalabra);
         controlesPanel.add(palabraRow);
 
-        // ── Ensamblado final ──────────────────────────────────────────
         panel.add(scroll);
         panel.add(Box.createRigidArea(new Dimension(0, 10)));
         panel.add(separador);
@@ -261,6 +271,126 @@ public class GUI extends JFrame {
         panel.add(controlesPanel);
 
         return panel;
+    }
+    
+    
+    private void iniciarJuegoRandom() {
+        juegoAzar = new JuegoAhorcadoAzar();
+        juegoActual = juegoAzar;
+        juegoActual.inicializarPalabraSecreta();
+        iniciarJuego("RANDOM");
+    }
+    
+    private void iniciarJuegoFijo() {
+        String palabra = JOptionPane.showInputDialog(this, 
+            "Ingresa la palabra secreta:", 
+            "Modo Fijo", 
+            JOptionPane.PLAIN_MESSAGE);
+        
+        if (palabra == null || palabra.trim().isEmpty()) {
+            System.out.println("⚠️ Palabra inválida");
+            return;
+        }
+        
+        juegoFijo = new JuegoAhorcadoFijo(palabra.trim().toLowerCase());
+        juegoActual = juegoFijo;
+        juegoActual.inicializarPalabraSecreta();
+        iniciarJuego("FIJO");
+    }
+    
+    private void iniciarJuego(String modo) {
+        juegoEnCurso = true;
+        
+        campoLetra.setEnabled(true);
+        btnIntentar.setEnabled(true);
+        campoPista.setForeground(CACENTO);
+        actualizarPantalla();
+        
+        System.out.println("\n═══════════════════════════════════");
+        System.out.println("  MODO: " + modo);
+        System.out.println("  Intentos restantes: " + juegoActual.intentos);
+        System.out.println("═══════════════════════════════════\n");
+    }
+    
+    private void intentarLetra() {
+        if (!juegoEnCurso) return;
+        
+        String texto = campoLetra.getText().trim();
+        
+        if (texto.isEmpty() || texto.equals("Ingresa una letra...")) {
+            System.out.println("⚠️ Debes ingresar una letra");
+            return;
+        }
+        
+        if (texto.length() != 1) {
+            System.out.println("⚠️ Ingresa solo UNA letra");
+            campoLetra.setText("");
+            return;
+        }
+        
+        char letra = texto.toLowerCase().charAt(0);
+        
+        if (juegoActual.letraRepetida(letra)) {
+            System.out.println("⚠️ Letra repetida: " + letra);
+            campoLetra.setText("");
+            return;
+        }
+        
+        if (juegoActual.verificarLetra(letra)) {
+            System.out.println("✅ ¡Correcto! La letra '" + letra + "' está en la palabra");
+            juegoActual.actualizarPalabraActual(letra);
+        } else {
+            juegoActual.intentos--;
+            System.out.println("❌ La letra '" + letra + "' NO está en la palabra");
+            System.out.println("Intentos restantes: " + juegoActual.intentos);
+        }
+        
+        campoLetra.setText("");
+        actualizarPantalla();
+        verificarFinJuego();
+    }
+    
+    private void actualizarPantalla() {
+        campoPista.setText(juegoActual.palabraActual.replace("", " ").trim());
+        
+        int errores = juegoActual.limiteIntentos - juegoActual.intentos;
+        if (errores < juegoActual.figuraAhorcado.size()) {
+            System.out.println(juegoActual.figuraAhorcado.get(errores));
+        }
+    }
+    
+    private void verificarFinJuego() {
+        if (juegoActual.hasGanado()) {
+            System.out.println("\n🎉 ¡FELICIDADES! Has ganado");
+            System.out.println("La palabra era: " + juegoActual.palabraSecreta);
+            finalizarJuego();
+        } else if (juegoActual.intentos <= 0) {
+            System.out.println("\n💀 GAME OVER");
+            System.out.println("La palabra era: " + juegoActual.palabraSecreta);
+            System.out.println(juegoActual.figuraAhorcado.get(juegoActual.figuraAhorcado.size() - 1));
+            finalizarJuego();
+        }
+    }
+    
+    private void finalizarJuego() {
+        juegoEnCurso = false;
+        campoLetra.setEnabled(false);
+        btnIntentar.setEnabled(false);
+        campoPista.setText("Selecciona un modo para empezar");
+        campoPista.setForeground(CTEXTO2);
+    }
+    
+    private void agregarPalabra() {
+        String palabra = campoPalabra.getText().trim();
+        
+        if (palabra.isEmpty() || palabra.equals("Nueva palabra...")) {
+            System.out.println("⚠️ Ingresa una palabra válida");
+            return;
+        }
+        
+        AdminPalabrasSecretas.ListaPalabras.add(palabra.toLowerCase());
+        System.out.println("✅ Palabra agregada: " + palabra);
+        campoPalabra.setText("");
     }
     
     
@@ -298,19 +428,21 @@ public class GUI extends JFrame {
     }
     
     private JButton SButton() {
-        JButton button = new JButton("PROBAR PALABRA");
-        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        JButton button = new JButton("PROBAR LETRA");
+        button.setFont(new Font("Segoe UI", Font.BOLD, 13));
         button.setForeground(CSECUNDARIO);
         button.setBackground(CACENTO);
         button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setPreferredSize(new Dimension(200, 45));
+        btnBorderPainted(false);
+        button.setPreferredSize(new Dimension(150, 45));
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                button.setBackground(new Color(67, 160, 71));
+                if (button.isEnabled()) {
+                    button.setBackground(new Color(67, 160, 71));
+                }
             }
             
             @Override
@@ -318,35 +450,6 @@ public class GUI extends JFrame {
                 button.setBackground(CACENTO);
             }
         });
-        
-   
-        
-        return button;
-    }
-    
-    private JButton GMButton() {
-        JButton button = new JButton("Modo Random");
-        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
-        button.setForeground(CSECUNDARIO);
-        button.setBackground(CACENTO);
-        button.setFocusPainted(false);
-        button.setBorderPainted(false);
-        button.setPreferredSize(new Dimension(200, 45));
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                button.setBackground(new Color(137, 207, 240));
-            }
-            
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(CACENTO);
-            }
-        });
-        
-   
         
         return button;
     }
@@ -364,5 +467,9 @@ public class GUI extends JFrame {
         panel.add(lblInfo);
         
         return panel;
+    }
+
+    private void btnBorderPainted(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

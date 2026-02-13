@@ -35,17 +35,9 @@ public class AdminPalabrasSecretas {
         return Palabra;
     }
     
-    public static void main(String [] args){
-        String Palabra;
-        while(!ListaPalabras.isEmpty()){
-            for(int x=0 ; x<10 ; x++){
-                AgregarPalabras();
-                Palabra = ObtenerPalabraRNG();
-                System.out.println(Palabra);
-            }
-        }
+   
         
     }
-}
+
 
     
