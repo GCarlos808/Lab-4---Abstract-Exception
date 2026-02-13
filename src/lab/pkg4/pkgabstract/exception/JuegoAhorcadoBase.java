@@ -1,6 +1,6 @@
 package lab.pkg4.pkgabstract.exception;
 import java.util.ArrayList;
-public abstract class JuegoAhorcadoBase {
+public abstract class JuegoAhorcadoBase implements JuegoAhorcado{
     protected String palabraSecreta, palabraActual;
     protected int intentos;
     protected final int limiteIntentos=6;
