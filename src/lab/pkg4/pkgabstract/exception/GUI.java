@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -34,7 +35,7 @@ public class GUI extends JFrame {
     public GUI(){
     
         setTitle("Juego Ahorcado Six");
-        setSize(540, 600);
+        setSize(620, 670);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -92,35 +93,176 @@ public class GUI extends JFrame {
     }
     
     private JPanel BodyPanel() {
-        
         JPanel panel = new JPanel();
         panel.setBackground(CFONDO);
-        panel.setLayout(new BorderLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 30, 15, 30));
-
+        
         JTextArea consolaArea = new JTextArea();
         consolaArea.setEditable(false);
-        consolaArea.setFont(new Font("SegoeUI", Font.PLAIN, 13));
+        consolaArea.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         consolaArea.setBackground(new Color(30, 30, 30));
         consolaArea.setForeground(new Color(180, 255, 180));
         consolaArea.setCaretColor(Color.WHITE);
-        consolaArea.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        consolaArea.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        
+        
         JScrollPane scroll = new JScrollPane(consolaArea);
-        scroll.setPreferredSize(new Dimension(480, 150));
-        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
+        scroll.setPreferredSize(new Dimension(480, 180));
+        scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 180));
+        scroll.setMinimumSize(new Dimension(100, 180));
         scroll.setBorder(BorderFactory.createLineBorder(new Color(220, 220, 220), 1));
-
+        scroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
         ConsolaOutputStream consolaStream = new ConsolaOutputStream(consolaArea);
         PrintStream printStream = new PrintStream(consolaStream, true);
-        
-        
         System.setOut(printStream);
         System.setErr(printStream);
+
         
-        panel.add(scroll, BorderLayout.CENTER);
+        JSeparator separador = new JSeparator();
+        separador.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        separador.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JPanel controlesPanel = new JPanel();
+        controlesPanel.setLayout(new BoxLayout(controlesPanel, BoxLayout.Y_AXIS));
+        controlesPanel.setBackground(CFONDO);
+        controlesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel lblModo = new JLabel("Modo de juego:");
+        lblModo.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblModo.setForeground(CTEXTO);
+        lblModo.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblModo.setBorder(BorderFactory.createEmptyBorder(0, 0, 6, 0));
+
+        JPanel modoRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        modoRow.setBackground(CFONDO);
+        modoRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        modoRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+        JButton btnRandom = new JButton("Random");
+        btnRandom.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnRandom.setForeground(CSECUNDARIO);
+        btnRandom.setBackground(new Color(33, 150, 243));   // Azul
+        btnRandom.setFocusPainted(false);
+        btnRandom.setBorderPainted(false);
+        btnRandom.setPreferredSize(new Dimension(130, 36));
+        btnRandom.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnRandom.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) {
+                btnRandom.setBackground(new Color(25, 118, 210));
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                btnRandom.setBackground(new Color(33, 150, 243));
+            }
+        });
+
+        JButton btnFijo = new JButton("Fijo");
+        btnFijo.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        btnFijo.setForeground(CSECUNDARIO);
+        btnFijo.setBackground(new Color(156, 39, 176));     // Púrpura
+        btnFijo.setFocusPainted(false);
+        btnFijo.setBorderPainted(false);
+        btnFijo.setPreferredSize(new Dimension(130, 36));
+        btnFijo.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnFijo.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) {
+                btnFijo.setBackground(new Color(123, 31, 162));
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                btnFijo.setBackground(new Color(156, 39, 176));
+            }
+        });
+
+        modoRow.add(btnRandom);
+        modoRow.add(btnFijo);
+        
+        JSeparator sepInterno = new JSeparator();
+        sepInterno.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        sepInterno.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel lblPalabraPista = new JLabel("Palabra secreta:");
+        lblPalabraPista.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblPalabraPista.setForeground(CTEXTO);
+        lblPalabraPista.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblPalabraPista.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
+        
+        JLabel campoPista = new JLabel("_ _ _ _ _");
+        campoPista.setFont(new Font("Monospaced", Font.BOLD, 20));
+        campoPista.setForeground(CACENTO);
+        campoPista.setAlignmentX(Component.LEFT_ALIGNMENT);
+        campoPista.setBorder(BorderFactory.createEmptyBorder(0, 0, 12, 0));
+        
+        JPanel inputRow = new JPanel(new BorderLayout(8, 0));
+        inputRow.setBackground(CFONDO);
+        inputRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        inputRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JTextField campoLetra = STextField("Ingresa una letra...");
+        JButton btnIntentar = SButton();
+        
+        inputRow.add(campoLetra, BorderLayout.CENTER);
+        inputRow.add(btnIntentar, BorderLayout.EAST);
+        
+        JSeparator sepInterno2 = new JSeparator();
+        sepInterno2.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
+        sepInterno2.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JLabel lblAgregarPalabra = new JLabel("Agregar palabra al índice:");
+        lblAgregarPalabra.setFont(new Font("Segoe UI", Font.BOLD, 13));
+        lblAgregarPalabra.setForeground(CTEXTO);
+        lblAgregarPalabra.setAlignmentX(Component.LEFT_ALIGNMENT);
+        lblAgregarPalabra.setBorder(BorderFactory.createEmptyBorder(10, 0, 6, 0));
+        
+        JPanel palabraRow = new JPanel(new BorderLayout(8, 0));
+        palabraRow.setBackground(CFONDO);
+        palabraRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        palabraRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        
+        JTextField campoPalabra = STextField("Nueva palabra...");
+        
+        JButton btnAgregar = new JButton("+ Agregar");
+        btnAgregar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnAgregar.setForeground(CSECUNDARIO);
+        btnAgregar.setBackground(new Color(255, 152, 0));
+        btnAgregar.setFocusPainted(false);
+        btnAgregar.setBorderPainted(false);
+        btnAgregar.setPreferredSize(new Dimension(100, 36));
+        btnAgregar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        btnAgregar.addMouseListener(new MouseAdapter() {
+            @Override public void mouseEntered(MouseEvent e) {
+                btnAgregar.setBackground(new Color(230, 120, 0));
+            }
+            @Override public void mouseExited(MouseEvent e) {
+                btnAgregar.setBackground(new Color(255, 152, 0));
+            }
+        });
+        
+        palabraRow.add(campoPalabra, BorderLayout.CENTER);
+        palabraRow.add(btnAgregar, BorderLayout.EAST);
+        
+        controlesPanel.add(lblModo);
+        controlesPanel.add(modoRow);
+        controlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        controlesPanel.add(sepInterno);
+        controlesPanel.add(lblPalabraPista);
+        controlesPanel.add(campoPista);
+        controlesPanel.add(inputRow);
+        controlesPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        controlesPanel.add(sepInterno2);
+        controlesPanel.add(lblAgregarPalabra);
+        controlesPanel.add(palabraRow);
+
+        // ── Ensamblado final ──────────────────────────────────────────
+        panel.add(scroll);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(separador);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(controlesPanel);
+
         return panel;
-        
     }
+    
     
     private JTextField STextField(String placeholder) {
         JTextField textField = new JTextField(20);
@@ -156,7 +298,7 @@ public class GUI extends JFrame {
     }
     
     private JButton SButton() {
-        JButton button = new JButton("INICIAR JUEGO");
+        JButton button = new JButton("PROBAR PALABRA");
         button.setFont(new Font("Segoe UI", Font.BOLD, 15));
         button.setForeground(CSECUNDARIO);
         button.setBackground(CACENTO);
@@ -169,6 +311,33 @@ public class GUI extends JFrame {
             @Override
             public void mouseEntered(MouseEvent e) {
                 button.setBackground(new Color(67, 160, 71));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(CACENTO);
+            }
+        });
+        
+   
+        
+        return button;
+    }
+    
+    private JButton GMButton() {
+        JButton button = new JButton("Modo Random");
+        button.setFont(new Font("Segoe UI", Font.BOLD, 15));
+        button.setForeground(CSECUNDARIO);
+        button.setBackground(CACENTO);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        button.setPreferredSize(new Dimension(200, 45));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(new Color(137, 207, 240));
             }
             
             @Override
