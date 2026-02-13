@@ -1,9 +1,10 @@
 package lab.pkg4.pkgabstract.exception;
 public class JuegoAhorcadoAzar extends JuegoAhorcadoBase{    
     
+
     public JuegoAhorcadoAzar(String palabraSecreta){
         this.palabraSecreta=palabraSecreta;
-        intentos=0;
+        intentos=limiteIntentos;
     }
     
     @Override
@@ -14,7 +15,7 @@ public class JuegoAhorcadoAzar extends JuegoAhorcadoBase{
                 arregloPalabraActual[i]=letra;
             }
         }
-        palabraActual=arregloPalabraActual.toString();
+        palabraActual = new String(arregloPalabraActual);
         return palabraActual;
     }
     
@@ -35,10 +36,10 @@ public class JuegoAhorcadoAzar extends JuegoAhorcadoBase{
     @Override
     public void inicializarPalabraSecreta(){
         char[] arregloPalabraActual=new char[palabraSecreta.length()];
-        for(char c: arregloPalabraActual){
-            c='_';
-        }
-        palabraActual=arregloPalabraActual.toString();
+        for(int i = 0; i < arregloPalabraActual.length; i++){
+        arregloPalabraActual[i] = '_';
+    }
+    palabraActual = new String(arregloPalabraActual);
     }
 
     @Override
